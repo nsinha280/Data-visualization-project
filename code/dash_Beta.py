@@ -158,7 +158,10 @@ app.layout = html.Div([
     html.Hr(),
 
     html.Div([dcc.Graph(id='choropleth')],
-             style={'width': '49%', 'float': 'left', 'display': 'inline-block'})
+             style={'width': '49%', 'float': 'left', 'display': 'inline-block'}),
+
+html.Div([dcc.Graph(id='bargraph')],
+             style={'width': '49%', 'float': 'right', 'display': 'inline-block'})
     ])
 
 
@@ -195,6 +198,33 @@ def update_figure(filter_choice):
                 projection=dict(type='albers usa'),
                 showlakes=True,
                 lakecolor='rgb(255, 255, 255)'),
+        )
+    }
+
+
+@app.callback(
+    dash.dependencies.Output('bargraph', 'figure'),
+    [dash.dependencies.Input('information', 'value')])
+def update_bargraph(filter_choice):
+    average = all_options[filter_choice][0]
+    title_text = all_options[filter_choice][2]
+
+
+    return {
+        'data': [go.Bar(
+            x= data_viz['state'].unique(),
+            y= data_viz[average].astype(float).unique()
+    )],
+        'layout': go.Layout(
+            title=title_text,
+            yaxis=dict(
+                title='Average graduation rate',
+                titlefont=dict(
+                    family='Courier New, monospace',
+                    size=18,
+                    color='#7f7f7f'
+                )
+            )
         )
     }
 
