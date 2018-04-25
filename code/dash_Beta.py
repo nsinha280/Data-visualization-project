@@ -89,6 +89,7 @@ scl = [[0.0, 'rgb(242,240,247)'], [0.2, 'rgb(218,218,235)'],
        [0.4, 'rgb(188,189,220)'], \
        [0.6, 'rgb(158,154,200)'], [0.8, 'rgb(117,107,177)'],
        [1.0, 'rgb(84,39,143)']]
+
 data_full['text_grad'] = data_full['state'] + '<br>' + 'Graduation Rate ' \
                          + ['%.1f' % round(float(x), 1)
                               for x in data_full['state_100_avg']] + '%'
@@ -213,7 +214,10 @@ def update_bargraph(filter_choice):
     return {
         'data': [go.Bar(
             x= data_viz['state'].unique(),
-            y= data_viz[average].astype(float).unique()
+            y= data_viz[average].astype(float).unique(),
+            marker=dict(
+                color='rgb(84,39,143)'
+            )
     )],
         'layout': go.Layout(
             title=title_text,
@@ -222,7 +226,7 @@ def update_bargraph(filter_choice):
                 titlefont=dict(
                     family='Courier New, monospace',
                     size=18,
-                    color='#54278f'
+                    color='#7f7f7f'
                 )
             )
         )
