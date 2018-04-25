@@ -79,7 +79,7 @@ data_full['state_pell_avg'] = data_full.groupby(['code'])['pell_value']\
 data_full['state_ft_fac_avg'] = data_full.groupby(['code'])['ft_fac_value']\
     .transform('mean')
 data_full['state_student_count_avg'] = data_full\
-.groupby(['code'])['pell_value'].transform('mean')
+.groupby(['code'])['student_count'].transform('mean')
 
 
 for col in data_full.columns:
