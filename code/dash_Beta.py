@@ -93,7 +93,7 @@ data_full['text_grad'] = data_full['state'] + '<br>' + 'Graduation Rate ' \
                          + ['%.1f' % round(float(x), 1)
                               for x in data_full['state_100_avg']] + '%'
 data_full['text_pell'] = data_full['state'] + '<br>' \
-                         + 'Average Pell Grant Value' \
+                         + 'Average Pell Grant Value ' \
                          + ['%.1f' % round(float(x), 1)
                                for x in data_full['state_pell_avg']] + '%'
 data_full['text_ft_fac'] = data_full['state'] + '<br>' \
@@ -104,8 +104,7 @@ data_full['text_student_count'] = data_full['state'] + '<br>' \
                                   + 'Average Student Count ' \
                          + ['%.1f' % round(float(x), 1)
                                    for x in
-                                        data_full['state_student_count_avg']] \
-                                  + '%'
+                                        data_full['state_student_count_avg']]
 
 data_viz = data_full[['unitid',
                       'chronname',
@@ -138,10 +137,16 @@ data_viz = data_full[['unitid',
 app = dash.Dash(__name__)
 
 all_options = {
-    'Graduation Rate': ['state_100_avg', 'text_grad'],
-    'Pell Grant Value': ['state_pell_avg', 'text_pell'],
-    'Full-Time Faculty': ['state_ft_fac_avg', 'text_ft_fac'],
-    'Student Count': ['state_student_count_avg', 'text_student_count']
+    'Graduation Rate': ['state_100_avg', 'text_grad',
+                        'Graduation Rates by State<br>(Hover for breakdown)'],
+    'Pell Grant Value': ['state_pell_avg', 'text_pell',
+                         'Average Pell Grant Student Percentage by State'
+                         '<br>(Hover for breakdown)'],
+    'Full-Time Faculty': ['state_ft_fac_avg', 'text_ft_fac',
+                          'Average Full-Time Faculty Members Percentage'
+                          ' by State<br>(Hover for breakdown)'],
+    'Student Count': ['state_student_count_avg', 'text_student_count',
+                      'Average Student Count by State<br>(Hover for breakdown)']
 }
 app.layout = html.Div([
     dcc.RadioItems(
@@ -163,6 +168,7 @@ app.layout = html.Div([
 def update_figure(filter_choice):
     average = all_options[filter_choice][0]
     text = all_options[filter_choice][1]
+    title_text = all_options[filter_choice][2]
 
 
     return {
@@ -183,7 +189,7 @@ def update_figure(filter_choice):
                 title="Percentage")
         )],
         'layout': go.Layout(
-            title='Graduation rates by State<br>(Hover for breakdown)',
+            title=title_text,
             geo=dict(
                 scope='usa',
                 projection=dict(type='albers usa'),
