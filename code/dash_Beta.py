@@ -140,18 +140,18 @@ app = dash.Dash(__name__)
 all_options = {
     'Graduation Rate': ['state_100_avg', 'text_grad',
                         'Graduation Rates by State<br>(Hover for breakdown)',
-                        'Average Graduation Rate'],
+                        'Average Graduation Rate','Percentage'],
     'Pell Grant Value': ['state_pell_avg', 'text_pell',
                          'Average Pell Grant Student Percentage by State'
                          '<br>(Hover for breakdown)',
-                         'Average Pell Grant Rate'],
+                         'Average Pell Grant Rate','Percentage'],
     'Full-Time Faculty': ['state_ft_fac_avg', 'text_ft_fac',
                           'Average Full-Time Faculty Members Percentage'
                           ' by State<br>(Hover for breakdown)',
-                          'Average Full-Time Faculty Percentage'],
+                          'Average Full-Time Faculty Percentage','Percentage'],
     'Student Count': ['state_student_count_avg', 'text_student_count',
                       'Average Student Count by State<br>(Hover for breakdown)',
-                      'Average Student Count']
+                      'Average Student Count','Count']
 }
 
 level_options = {
@@ -192,6 +192,7 @@ def update_figure(filter_choice, level_choice):
     text = all_options[filter_choice][1]
     title_text = all_options[filter_choice][2]
     dff = data_viz[data_viz['level']==level_options[level_choice]]
+    bar_title = all_options[filter_choice][4]
 
 
     return {
@@ -209,7 +210,7 @@ def update_figure(filter_choice, level_choice):
                     width=2
                 )),
             colorbar=dict(
-                title="Percentage")
+                title=bar_title)
         )],
         'layout': go.Layout(
             title=title_text,
