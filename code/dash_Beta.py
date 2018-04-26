@@ -139,15 +139,19 @@ app = dash.Dash(__name__)
 
 all_options = {
     'Graduation Rate': ['state_100_avg', 'text_grad',
-                        'Graduation Rates by State<br>(Hover for breakdown)'],
+                        'Graduation Rates by State<br>(Hover for breakdown)',
+                        'Average Graduation Rate'],
     'Pell Grant Value': ['state_pell_avg', 'text_pell',
                          'Average Pell Grant Student Percentage by State'
-                         '<br>(Hover for breakdown)'],
+                         '<br>(Hover for breakdown)',
+                         'Average Pell Grant Rate'],
     'Full-Time Faculty': ['state_ft_fac_avg', 'text_ft_fac',
                           'Average Full-Time Faculty Members Percentage'
-                          ' by State<br>(Hover for breakdown)'],
+                          ' by State<br>(Hover for breakdown)',
+                          'Average Full-Time Faculty Percentage'],
     'Student Count': ['state_student_count_avg', 'text_student_count',
-                      'Average Student Count by State<br>(Hover for breakdown)']
+                      'Average Student Count by State<br>(Hover for breakdown)',
+                      'Average Student Count']
 }
 
 level_options = {
@@ -225,6 +229,7 @@ def update_figure(filter_choice, level_choice):
 def update_bargraph(filter_choice, level_choice):
     average = all_options[filter_choice][0]
     title_text = all_options[filter_choice][2]
+    y_axis_title = all_options[filter_choice][3]
     dff = data_viz[data_viz['level'] == level_options[level_choice]]
 
 
@@ -239,7 +244,7 @@ def update_bargraph(filter_choice, level_choice):
         'layout': go.Layout(
             title=title_text,
             yaxis=dict(
-                title='Average graduation rate',
+                title=y_axis_title,
                 titlefont=dict(
                     family='Courier New, monospace',
                     size=18,
