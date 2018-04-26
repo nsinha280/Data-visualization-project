@@ -72,14 +72,14 @@ data_full['state'] = ['Virginia' if x == 'District of Columbia'
                  else x for x in data_full['state']]
 data_full['code'] = [state[x] for x in data_full['state']]
 
-data_full['state_100_avg'] = data_full.groupby(['code'])['grad_100_value']\
+data_full['state_100_avg'] = data_full.groupby(['code','level'])['grad_100_value']\
     .transform('mean')
-data_full['state_pell_avg'] = data_full.groupby(['code'])['pell_value']\
+data_full['state_pell_avg'] = data_full.groupby(['code','level'])['pell_value']\
     .transform('mean')
-data_full['state_ft_fac_avg'] = data_full.groupby(['code'])['ft_fac_value']\
+data_full['state_ft_fac_avg'] = data_full.groupby(['code','level'])['ft_fac_value']\
     .transform('mean')
 data_full['state_student_count_avg'] = data_full\
-.groupby(['code'])['student_count'].transform('mean')
+.groupby(['code','level'])['student_count'].transform('mean')
 
 
 for col in data_full.columns:
@@ -149,11 +149,24 @@ all_options = {
     'Student Count': ['state_student_count_avg', 'text_student_count',
                       'Average Student Count by State<br>(Hover for breakdown)']
 }
+
+level_options = {
+    '2 Year Schools' : '2-year',
+    '4 Year Schools' : '4-year'
+}
 app.layout = html.Div([
     dcc.RadioItems(
         id='information',
         options=[{'label': k, 'value': k} for k in all_options.keys()],
         value='Graduation Rate'
+    ),
+
+    html.Hr(),
+
+    dcc.RadioItems(
+        id='level-information',
+        options=[{'label': k, 'value': k} for k in level_options.keys()],
+        value='4 Year Schools'
     ),
 
     html.Hr(),
@@ -168,22 +181,24 @@ html.Div([dcc.Graph(id='bargraph')],
 
 @app.callback(
     dash.dependencies.Output('choropleth', 'figure'),
-    [dash.dependencies.Input('information', 'value')])
-def update_figure(filter_choice):
+    [dash.dependencies.Input('information', 'value'),
+     dash.dependencies.Input('level-information', 'value')])
+def update_figure(filter_choice, level_choice):
     average = all_options[filter_choice][0]
     text = all_options[filter_choice][1]
     title_text = all_options[filter_choice][2]
+    dff = data_viz[data_viz['level']==level_options[level_choice]]
 
 
     return {
         'data': [go.Choropleth(
             colorscale=scl,
             autocolorscale=False,
-            locations=data_viz['code'].unique(),
+            locations=dff['code'].unique(),
             z=['%.1f' % round(x, 1) for x in
-               data_viz[average].astype(float).unique()],
+               dff[average].astype(float).unique()],
             locationmode='USA-states',
-            text=data_viz[text].unique(),
+            text=dff[text].unique(),
             marker=dict(
                 line=dict(
                     color='rgb(255,255,255)',
@@ -205,16 +220,18 @@ def update_figure(filter_choice):
 
 @app.callback(
     dash.dependencies.Output('bargraph', 'figure'),
-    [dash.dependencies.Input('information', 'value')])
-def update_bargraph(filter_choice):
+    [dash.dependencies.Input('information', 'value'),
+     dash.dependencies.Input('level-information', 'value')])
+def update_bargraph(filter_choice, level_choice):
     average = all_options[filter_choice][0]
     title_text = all_options[filter_choice][2]
+    dff = data_viz[data_viz['level'] == level_options[level_choice]]
 
 
     return {
         'data': [go.Bar(
-            x= data_viz['state'].unique(),
-            y= data_viz[average].astype(float).unique(),
+            x= dff['state'].unique(),
+            y= dff[average].astype(float).unique(),
             marker=dict(
                 color='rgb(84,39,143)'
             )
