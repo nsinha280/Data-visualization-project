@@ -152,23 +152,27 @@ all_options = {
                         'Graduation Rates by State<br>(Hover for breakdown)',
                         'Average Graduation Rate','Percentage',
                         'grad_100_value',
-                        'Graduation Rates for Colleges at Hovered Location'],
+                        'Graduation Rates for Colleges at Hovered Location',
+                        'Graduation Rate'],
     'Pell Grant Value': ['state_pell_avg', 'text_pell',
                          'Average Pell Grant Student Percentage by State'
                          '<br>(Hover for breakdown)',
                          'Average Pell Grant Rate','Percentage',
                          'pell_value',
-                         'Pell Grant Rate for Colleges at Hovered Location'],
+                         'Pell Grant Rate for Colleges at Hovered Location',
+                         'Pell Grant Rate'],
     'Full-Time Faculty': ['state_ft_fac_avg', 'text_ft_fac',
                           'Average Full-Time Faculty Members Percentage'
                           ' by State<br>(Hover for breakdown)',
                           'Average Full-Time Faculty Percentage','Percentage',
                           'ft_fac_value',
-                          'Full-Time Faculty Percentage for Colleges at Hovered Location'],
+                          'Full-Time Faculty Percentage for Colleges at Hovered Location',
+                          'Full-Time Faculty Percentage'],
     'Student Count': ['state_student_count_avg', 'text_student_count',
                       'Average Student Count by State<br>(Hover for breakdown)',
                       'Average Student Count', 'Count', 'student_count',
-                      'Student Counts for Colleges at Hovered Location']
+                      'Student Counts for Colleges at Hovered Location',
+                      'Student Count']
 }
 
 level_options = {
@@ -333,7 +337,7 @@ def update_hovergraph(hoverData, filter_choice, level_choice):
     dff = data_viz[data_viz['code'] == location]
     dff = dff[dff['level'] == level_options[level_choice]]
     title = all_options[filter_choice][6]
-    axis_title = 'Colleges in '+location
+    axis_title = all_options[filter_choice][7]
     return create_hovergraph(dff, graph_type, title, axis_title)
 
 if __name__ == '__main__':
