@@ -1,3 +1,6 @@
+import json
+from textwrap import dedent as d
+
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -137,21 +140,35 @@ data_viz = data_full[['unitid',
 
 app = dash.Dash(__name__)
 
+styles = {
+    'pre': {
+        'border': 'thin lightgrey solid',
+        'overflowX': 'scroll'
+    }
+}
+
 all_options = {
     'Graduation Rate': ['state_100_avg', 'text_grad',
                         'Graduation Rates by State<br>(Hover for breakdown)',
-                        'Average Graduation Rate','Percentage'],
+                        'Average Graduation Rate','Percentage',
+                        'grad_100_value',
+                        'Graduation Rates for Colleges at Hovered Location'],
     'Pell Grant Value': ['state_pell_avg', 'text_pell',
                          'Average Pell Grant Student Percentage by State'
                          '<br>(Hover for breakdown)',
-                         'Average Pell Grant Rate','Percentage'],
+                         'Average Pell Grant Rate','Percentage',
+                         'pell_value',
+                         'Pell Grant Rate for Colleges at Hovered Location'],
     'Full-Time Faculty': ['state_ft_fac_avg', 'text_ft_fac',
                           'Average Full-Time Faculty Members Percentage'
                           ' by State<br>(Hover for breakdown)',
-                          'Average Full-Time Faculty Percentage','Percentage'],
+                          'Average Full-Time Faculty Percentage','Percentage',
+                          'ft_fac_value',
+                          'Full-Time Faculty Percentage for Colleges at Hovered Location'],
     'Student Count': ['state_student_count_avg', 'text_student_count',
                       'Average Student Count by State<br>(Hover for breakdown)',
-                      'Average Student Count','Count']
+                      'Average Student Count', 'Count', 'student_count',
+                      'Student Counts for Colleges at Hovered Location']
 }
 
 level_options = {
@@ -175,13 +192,31 @@ app.layout = html.Div([
 
     html.Hr(),
 
-    html.Div([dcc.Graph(id='choropleth')],
-             style={'width': '49%', 'float': 'left', 'display': 'inline-block'}),
+    html.Div([dcc.Graph(id='choropleth',
+                        hoverData={'points': [{'location': 'CA'}]})],
+             ),
 
-html.Div([dcc.Graph(id='bargraph')],
-             style={'width': '49%', 'float': 'right', 'display': 'inline-block'})
+    html.Div([dcc.Graph(id='hovergraph')],
+             style={'width': '49%', 'float': 'left',
+                    'display': 'inline-block'}),
+
+    html.Div([dcc.Graph(id='bargraph')],
+             style={'width': '49%', 'float': 'right',
+                    'display': 'inline-block'}),
+
+    html.Div([dcc.Markdown(d("""
+                **Hover Data**
+
+                Mouse over values in the graph.
+            """)),html.Pre(id='hover-data', style=styles['pre'])])
     ])
 
+
+@app.callback(
+    dash.dependencies.Output('hover-data', 'children'),
+    [dash.dependencies.Input('choropleth', 'hoverData')])
+def display_hover_data(hoverData):
+    return json.dumps(hoverData, indent=2)
 
 @app.callback(
     dash.dependencies.Output('choropleth', 'figure'),
@@ -236,24 +271,70 @@ def update_bargraph(filter_choice, level_choice):
 
     return {
         'data': [go.Bar(
-            x= dff['state'].unique(),
-            y= dff[average].astype(float).unique(),
+            x= dff[average].astype(float).unique(),
+            y= dff['state'].unique(),
             marker=dict(
                 color='rgb(84,39,143)'
-            )
+            ),
+            orientation = 'h'
     )],
         'layout': go.Layout(
             title=title_text,
-            yaxis=dict(
+            xaxis=dict(
                 title=y_axis_title,
                 titlefont=dict(
                     family='Courier New, monospace',
                     size=18,
                     color='#7f7f7f'
                 )
+            ),
+            margin=go.Margin(
+                l=120
             )
         )
     }
+
+def create_hovergraph(dff, graph_type, title, axis_title):
+
+
+    return {
+        'data': [go.Bar(
+            x=dff[graph_type].astype(float).unique(),
+            y=dff['chronname'].unique(),
+            marker=dict(
+                color='rgb(84,39,143)'
+            ),
+            orientation='h'
+        )],
+        'layout': go.Layout(
+            title=title,
+            xaxis=dict(
+                title=axis_title,
+                titlefont=dict(
+                    family='Courier New, monospace',
+                    size=18,
+                    color='#7f7f7f'
+                ),
+            ),
+            margin=go.Margin(
+                l=400
+            )
+        )
+    }
+
+@app.callback(
+    dash.dependencies.Output('hovergraph', 'figure'),
+    [dash.dependencies.Input('choropleth', 'hoverData'),
+     dash.dependencies.Input('information', 'value'),
+     dash.dependencies.Input('level-information', 'value')])
+def update_hovergraph(hoverData, filter_choice, level_choice):
+    location = hoverData['points'][0]['location']
+    graph_type = all_options[filter_choice][5]
+    dff = data_viz[data_viz['code'] == location]
+    dff = dff[dff['level'] == level_options[level_choice]]
+    title = all_options[filter_choice][6]
+    axis_title = 'Colleges in '+location
+    return create_hovergraph(dff, graph_type, title, axis_title)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
