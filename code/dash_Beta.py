@@ -198,7 +198,7 @@ app.layout = html.Div([
 
     html.Div([dcc.Graph(id='choropleth',
                         clickData={'points': [{'location': 'CA'}]})],
-             ),
+             style={'height': '80%'}),
 
     html.Div([dcc.Graph(id='hovergraph')],
              style={'width': '49%', 'float': 'left',
@@ -208,19 +208,8 @@ app.layout = html.Div([
              style={'width': '49%', 'float': 'right',
                     'display': 'inline-block'}),
 
-    html.Div([dcc.Markdown(d("""
-                **Hover Data**
-
-                Mouse over values in the graph.
-            """)),html.Pre(id='hover-data', style=styles['pre'])])
     ])
 
-
-@app.callback(
-    dash.dependencies.Output('hover-data', 'children'),
-    [dash.dependencies.Input('choropleth', 'hoverData')])
-def display_hover_data(hoverData):
-    return json.dumps(hoverData, indent=2)
 
 @app.callback(
     dash.dependencies.Output('choropleth', 'figure'),
