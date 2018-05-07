@@ -260,6 +260,7 @@ def update_bargraph(filter_choice, level_choice):
     title_text = all_options[filter_choice][2]
     y_axis_title = all_options[filter_choice][3]
     dff = data_viz[data_viz['level'] == level_options[level_choice]]
+    dff = dff.sort_values(by=['state'], ascending=False)
 
 
     return {
@@ -325,6 +326,7 @@ def update_hovergraph(clickData, filter_choice, level_choice):
     graph_type = all_options[filter_choice][5]
     dff = data_viz[data_viz['code'] == location]
     dff = dff[dff['level'] == level_options[level_choice]]
+    dff = dff.sort_values(by=['chronname'], ascending=False)
     title = all_options[filter_choice][6] + location
     axis_title = all_options[filter_choice][7]
     return create_hovergraph(dff, graph_type, title, axis_title)
