@@ -342,7 +342,8 @@ def update_hovergraph(clickData, filter_choice, level_choice):
     dff = data_viz[data_viz['code'] == location]
     dff = dff[dff['level'] == level_options[level_choice]]
     dff = dff.sort_values(by=['chronname'], ascending=False)
-    title = all_options[filter_choice][6] + location
+    title = all_options[filter_choice][6] + location + \
+            '<br>(Click on a State to Change)'
     axis_title = all_options[filter_choice][7]
     return create_hovergraph(dff, graph_type, title, axis_title)
 
