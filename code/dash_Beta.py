@@ -77,6 +77,8 @@ data_full['code'] = [state[x] for x in data_full['state']]
 
 data_full['state_100_avg'] = data_full.groupby(['code','level'])['grad_100_value']\
     .transform('mean')
+data_full['state_150_avg'] = data_full.groupby(['code','level'])['grad_150_value']\
+    .transform('mean')
 data_full['state_pell_avg'] = data_full.groupby(['code','level'])['pell_value']\
     .transform('mean')
 data_full['state_ft_fac_avg'] = data_full.groupby(['code','level'])['ft_fac_value']\
@@ -96,6 +98,10 @@ scl = [[0.0, 'rgb(242,240,247)'], [0.2, 'rgb(218,218,235)'],
 data_full['text_grad'] = data_full['state'] + '<br>' + 'Graduation Rate ' \
                          + ['%.1f' % round(float(x), 1)
                               for x in data_full['state_100_avg']] + '%'
+data_full['text_grad_late'] = data_full['state'] + '<br>' + \
+                              'Late Graduation Rate ' \
+                         + ['%.1f' % round(float(x), 1)
+                              for x in data_full['state_150_avg']] + '%'
 data_full['text_pell'] = data_full['state'] + '<br>' \
                          + 'Average Pell Grant Value ' \
                          + ['%.1f' % round(float(x), 1)
@@ -124,14 +130,17 @@ data_viz = data_full[['unitid',
                       'site',
                       'student_count',
                       'grad_100_value',
+                      'grad_150_value',
                       'pell_value',
                       'ft_fac_value',
                       'code',
                       'state_100_avg',
+                      'state_150_avg',
                       'state_pell_avg',
                       'state_ft_fac_avg',
                       'state_student_count_avg',
                       'text_grad',
+                      'text_grad_late',
                       'text_pell',
                       'text_ft_fac',
                       'text_student_count'
@@ -150,10 +159,16 @@ styles = {
 all_options = {
     'Graduation Rate': ['state_100_avg', 'text_grad',
                         'Graduation Rates by State<br>(Hover for breakdown)',
-                        'Average Graduation Rate','Percentage',
+                        'Average Graduation Rate', 'Percentage',
                         'grad_100_value',
                         'Graduation Rates for Colleges at ',
                         'Graduation Rate'],
+    'Late Graduation Rate': ['state_150_avg', 'text_grad_late',
+                        'Late Graduation Rates by State<br>(Hover for breakdown)',
+                        'Average Late Graduation Rate', 'Percentage',
+                        'grad_150_value',
+                        'Late Graduation Rates for Colleges at ',
+                        'Late Graduation Rate'],
     'Pell Grant Value': ['state_pell_avg', 'text_pell',
                          'Average Pell Grant Student Percentage by State'
                          '<br>(Hover for breakdown)',
