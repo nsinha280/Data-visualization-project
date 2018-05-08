@@ -15,7 +15,7 @@ df = pd.read_csv(
 
 ## Data Setup
 
-data_full= pd.read_csv('../college_completion/cc_institution_details.csv',
+data_full= pd.read_csv('cc_institution_details.csv',
                   encoding = 'latin1')
 
 state = {
