@@ -1,4 +1,4 @@
-python3_env
+myenv
 *.pyc
 .DS_Store
 .env

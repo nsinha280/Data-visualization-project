@@ -1,13 +1,11 @@
-import json
-from textwrap import dedent as d
-
+import os
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
-import plotly.plotly as py
+#import plotly.plotly as py
 import plotly.graph_objs as go
-from plotly.offline import init_notebook_mode, iplot
+#from plotly.offline import init_notebook_mode, iplot
 
 df = pd.read_csv(
     'https://raw.githubusercontent.com/plotly/'
