@@ -2,6 +2,7 @@
 
 Visualization on College Completion Dataset
 Created By: John Rumpel and Nimesh Sinha
+Website: https://nsinha280.github.io/Data-visualization-project/
 
 We have created visualizations on college completion datasets which has 3800 colleges distributed all over the U.S.
 
