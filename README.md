@@ -9,6 +9,9 @@ Created By: John Rumpel and Nimesh Sinha
 Website: https://nsinha280.github.io/Data-visualization-project/
 
 
+Dash Visualization: https://john-and-nimesh.herokuapp.com/
+
+
 We have created visualizations on college completion datasets which has 3800 colleges distributed all over the U.S.
 
 Why This Data?
